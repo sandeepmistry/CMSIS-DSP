@@ -121,17 +121,17 @@ function(preprocessScatter CORE PLATFORMFOLDER SCATTERFILE)
       COMMAND
         ${CMAKE_C_COMPILER} -E -x c -I${PLATFORMFOLDER}/${CORE}/LinkScripts/GCC -o ${SCATTERFILE} ${PLATFORMFOLDER}/${CORE}/LinkScripts/GCC/lnk.ld 
       COMMAND 
-        python ${CMSIS}/CMSIS/DSP/filterLinkScript.py ${SCATTERFILE} 
+        python3 ${CMSISDSP}/Testing/filterLinkScript.py ${SCATTERFILE} 
       DEPENDS  
        "${PLATFORMFOLDER}/${CORE}/LinkScripts/GCC/lnk.ld;${PLATFORMFOLDER}/${CORE}/LinkScripts/GCC/mem_${CORE}.h"
       )
     
     add_custom_target(
-      scatter ALL
+      ${PROJECTNAME}-scatter ALL
       DEPENDS "${SCATTERFILE};${PLATFORMFOLDER}/${CORE}/LinkScripts/GCC/mem_${CORE}.h"
     )
 
-    add_dependencies(${PROJECTNAME} scatter)
+    add_dependencies(${PROJECTNAME} ${PROJECTNAME}-scatter)
 endfunction()
 
 function(toolchainSpecificLinkForCortexM  PROJECTNAME CORE PLATFORMFOLDER HASCSTARTUP)
@@ -144,8 +144,8 @@ function(toolchainSpecificLinkForCortexM  PROJECTNAME CORE PLATFORMFOLDER HASCST
 
     target_include_directories(${PROJECTNAME} PRIVATE ${PLATFORMFOLDER}/${CORE}/LinkScripts/GCC)
 
-    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tempLink)
-    set(SCATTERFILE ${CMAKE_CURRENT_BINARY_DIR}/tempLink/lnk.ld)
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tempLink/${PROJECTNAME})
+    set(SCATTERFILE ${CMAKE_CURRENT_BINARY_DIR}/tempLink/${PROJECTNAME}/lnk.ld)
     preprocessScatter(${CORE} ${PLATFORMFOLDER} ${SCATTERFILE})
 
     set_target_properties(${PROJECTNAME} PROPERTIES LINK_DEPENDS "${SCATTERFILE}")
