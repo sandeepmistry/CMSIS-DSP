@@ -8,7 +8,7 @@ jobs:
     name: Compile Examples
     runs-on: ubuntu-22.04
     steps:
-      - name: Setup cmake
+      - name: Install CMake
         uses: jwlawson/actions-setup-cmake@v1.13
         with:
           cmake-version: 3.25.2
@@ -16,7 +16,7 @@ jobs:
         uses: carlosperate/arm-none-eabi-gcc-action@v1
         with:
           release: 12.2.Rel1
-      - name: Checkout
+      - name: Checkout CMSIS-DSP
         uses: actions/checkout@v3
         with:
           path: CMSIS-DSP
@@ -43,4 +43,3 @@ jobs:
         with:
           name: CMSIS-DSP-compiled-examples
           path: build/**/*.elf
-
