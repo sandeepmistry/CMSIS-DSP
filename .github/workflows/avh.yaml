@@ -1,0 +1,34 @@
+name: Arm Virtual Hardware
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+jobs:
+  compile_examples:
+    name: Compile Examples
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.13
+        with:
+          cmake-version: 3.25.2
+      - name: Install GNU Arm Embedded Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+        with:
+          release: 12.2.Rel1
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: CMSIS-DSP
+          fetch-depth: 0
+      - name: Checkout CMSIS_5
+        uses: actions/checkout@v3
+        with:
+          repository: ARM-Software/CMSIS_5
+          ref: 5.9.0
+          path: CMSIS_5
+          fetch-depth: 0
+      - name: Compile
+        run: |
+          cmake --version
+          arm-none-eabi-gcc --version
