@@ -32,3 +32,4 @@ jobs:
         run: |
           cmake --version
           arm-none-eabi-gcc --version
+          ls -l
