@@ -30,9 +30,6 @@ jobs:
           fetch-depth: 0
       - name: Compile
         run: |
-          cmake --version
-          arm-none-eabi-gcc --version
-          ls -l
           mkdir build
           cd build
           cmake \
@@ -41,4 +38,9 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE=../CMSIS-DSP/Examples/cmake/toolchain/arm-none-eabi-gcc.cmake \
             ../CMSIS-DSP/Examples/cmake
           make VERBOSE=1
+      - name: Upload Compiled Examples
+        uses: actions/upload-artifact@v3
+        with:
+          name: CMSIS-DSP-compiled-examples
+          path: build/**/*.elf
 
