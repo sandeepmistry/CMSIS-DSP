@@ -222,7 +222,7 @@ int32_t main()
   printf("mean = %f, std = %f\n",(double)mean,(double)std);
 #endif
 
-#if !defined(SEMIHOSTING) && !(USING_FVP_CORSTONE_300)
+#if !defined(SEMIHOSTING) && !defined(USING_FVP_CORSTONE_300)
   while (1);                             /* main function does not return */
 #endif
 }
