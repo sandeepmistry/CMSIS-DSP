@@ -33,3 +33,12 @@ jobs:
           cmake --version
           arm-none-eabi-gcc --version
           ls -l
+          mkdir build
+          cd build
+          cmake \
+            -DTARGET_CPU=cortex-m55 \
+            -DCMSIS_PATH=../CMSIS_5 \
+            -DCMAKE_TOOLCHAIN_FILE=../CMSIS-DSP/Examples/cmake/toolchain/arm-none-eabi-gcc.cmake \
+            ../CMSIS-DSP/Examples/cmake
+          make VERBOSE=1
+
