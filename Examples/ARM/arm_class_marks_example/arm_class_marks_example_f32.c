@@ -83,8 +83,12 @@
   */
 #include "arm_math.h"
 
-#if defined(SEMIHOSTING)
+#if defined(SEMIHOSTING) || defined(USING_FVP_CORSTONE_300)
 #include <stdio.h>
+#endif
+
+#if defined(USING_FVP_CORSTONE_300)
+extern void uart_init(void);
 #endif
 
 #define USE_STATIC_INIT
@@ -159,6 +163,9 @@ float32_t    max_marks, min_marks, mean, std, var;
 
 int32_t main()
 {
+#if defined(USING_FVP_CORSTONE_300)
+  uart_init();
+#endif
 
 #ifndef  USE_STATIC_INIT
 
@@ -211,11 +218,11 @@ int32_t main()
   ** ------------------------------------------------------------------- */
   arm_var_f32(testOutput, numStudents, &var);
 
-#if defined(SEMIHOSTING)
+#if defined(SEMIHOSTING) || defined(USING_FVP_CORSTONE_300)
   printf("mean = %f, std = %f\n",(double)mean,(double)std);
 #endif
 
-#if !defined(SEMIHOSTING)
+#if !defined(SEMIHOSTING) && !(USING_FVP_CORSTONE_300)
   while (1);                             /* main function does not return */
 #endif
 }
