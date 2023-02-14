@@ -46,24 +46,6 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../.. cmsis-dsp)
 # Target for all unit tests.
 add_custom_target(cmsis_dsp_examples)
 
-# This function should be used instead of add_executable.
-set_property(GLOBAL PROPERTY cmsis_dsp_example_executables)
-function(add_cmsis_dsp_example)
-    get_property(tmp GLOBAL PROPERTY cmsis_nn_unit_test_executables)
-    foreach(target ${ARGV})
-        set(tmp "${tmp} ${target}")
-        add_executable(${target})
-        target_link_libraries(${target} PRIVATE CMSISDSP m)
-        target_link_options(${target} PRIVATE "--specs=nosys.specs")
-        add_dependencies(cmsis_dsp_examples ${target})
-    endforeach()
-    set_property(GLOBAL PROPERTY cmsis_dsp_example_executables "${tmp}")
-endfunction(add_cmsis_dsp_example)
-
-add_subdirectory(../ARM/arm_bayes_example arm_bayes_example)
-add_subdirectory(../ARM/arm_class_marks_example arm_class_marks_example)
-
-
 add_library(retarget STATIC
     ${FVP_CORSTONE_300_PATH}/retarget.c
     ${FVP_CORSTONE_300_PATH}/uart.c)
@@ -89,17 +71,28 @@ target_include_directories(cmsis_startup PUBLIC
 target_compile_options(cmsis_startup INTERFACE -include${ARM_CPU}${ARM_FEATURES}.h)
 target_compile_definitions(cmsis_startup PRIVATE ${ARM_CPU}${ARM_FEATURES})
 
-# Link in FVP dependencies to every example.
-get_property(executables GLOBAL PROPERTY cmsis_dsp_example_executables)
-string(REPLACE " " ";" cmsis_dsp_examples_list_of_executables ${executables})
-foreach(target ${cmsis_dsp_examples_list_of_executables})
-    target_link_libraries(${target} PRIVATE retarget)
-    target_link_libraries(${target} PRIVATE $<TARGET_OBJECTS:cmsis_startup> cmsis_startup)
 
-    add_dependencies(${target} retarget cmsis_startup)
+# This function should be used instead of add_executable.
+set_property(GLOBAL PROPERTY cmsis_dsp_example_executables)
+function(add_cmsis_dsp_example)
+    get_property(tmp GLOBAL PROPERTY cmsis_nn_unit_test_executables)
+    foreach(target ${ARGV})
+        set(tmp "${tmp} ${target}")
+        add_executable(${target})
+        target_link_libraries(${target} PRIVATE retarget $<TARGET_OBJECTS:cmsis_startup> cmsis_startup CMSISDSP m)
+        target_link_options(${target} PRIVATE "--specs=nosys.specs")
+        add_dependencies(${target} retarget cmsis_startup CMSISDSP)
 
-    target_compile_definitions(${target} PUBLIC USING_FVP_CORSTONE_300)
+        target_compile_definitions(${target} PUBLIC USING_FVP_CORSTONE_300)
 
-    target_link_options(${target} PRIVATE -T ${FVP_CORSTONE_300_PATH}/linker.ld)
-    set_target_properties(${target} PROPERTIES LINK_DEPENDS ${FVP_CORSTONE_300_PATH}/linker.ld)
-endforeach()
+        # Link in FVP dependencies to every example.
+        target_link_options(${target} PRIVATE -T ${FVP_CORSTONE_300_PATH}/linker.ld)
+        set_target_properties(${target} PROPERTIES LINK_DEPENDS ${FVP_CORSTONE_300_PATH}/linker.ld)
+
+        add_dependencies(cmsis_dsp_examples ${target})
+    endforeach()
+    set_property(GLOBAL PROPERTY cmsis_dsp_example_executables "${tmp}")
+endfunction(add_cmsis_dsp_example)
+
+add_subdirectory(../ARM/arm_bayes_example arm_bayes_example)
+add_subdirectory(../ARM/arm_class_marks_example arm_class_marks_example)
