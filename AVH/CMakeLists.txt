@@ -41,7 +41,7 @@ set(FVP_CORSTONE_300_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Corstone-300" CACHE PATH
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
 # Build the functions to be tested.
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../.. cmsis-dsp)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/.. CMSISDSP)
 
 # Target for all unit tests.
 add_custom_target(cmsis_dsp_examples)
@@ -94,5 +94,12 @@ function(add_cmsis_dsp_example)
     set_property(GLOBAL PROPERTY cmsis_dsp_example_executables "${tmp}")
 endfunction(add_cmsis_dsp_example)
 
-add_subdirectory(../ARM/arm_bayes_example arm_bayes_example)
-add_subdirectory(../ARM/arm_class_marks_example arm_class_marks_example)
+add_cmsis_dsp_example(arm_bayes_example)
+target_sources(arm_bayes_example PRIVATE
+    ../Examples/ARM/arm_bayes_example/arm_bayes_example_f32.c
+)
+
+add_cmsis_dsp_example(arm_class_marks_example)
+target_sources(arm_class_marks_example PRIVATE
+    ../Examples/ARM/arm_class_marks_example/arm_class_marks_example_f32.c
+)

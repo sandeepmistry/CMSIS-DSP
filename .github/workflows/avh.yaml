@@ -30,16 +30,17 @@ jobs:
           fetch-depth: 0
       - name: Compile
         run: |
+          cd CMSIS-DSP/AVH
           mkdir build
           cd build
           cmake \
             -DTARGET_CPU=cortex-m55 \
-            -DCMSIS_PATH=../CMSIS_5 \
-            -DCMAKE_TOOLCHAIN_FILE=../CMSIS-DSP/Examples/cmake/toolchain/arm-none-eabi-gcc.cmake \
-            ../CMSIS-DSP/Examples/cmake
+            -DCMSIS_PATH=../../CMSIS_5 \
+            -DCMAKE_TOOLCHAIN_FILE=../toolchain/arm-none-eabi-gcc.cmake \
+            ..
           make VERBOSE=1
       - name: Upload Compiled Examples
         uses: actions/upload-artifact@v3
         with:
           name: CMSIS-DSP-compiled-examples
-          path: build/**/*.elf
+          path: CMSIS-DSP/AVH/build/**/*.elf
