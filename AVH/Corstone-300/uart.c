@@ -47,6 +47,7 @@ typedef struct
 #define CMSDK_UART0 ((CMSDK_UART_TypeDef *)CMSDK_UART0_BASE)
 #define CMSDK_UART0_BAUDRATE UART0_BAUDRATE
 
+__attribute__((constructor))
 void uart_init(void)
 {
     // SystemCoreClock / 9600

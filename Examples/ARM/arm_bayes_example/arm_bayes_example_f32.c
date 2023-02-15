@@ -61,10 +61,6 @@
 #include <stdio.h>
 #include "arm_math.h"
 
-#if defined(USING_FVP_CORSTONE_300)
-extern void uart_init(void);
-#endif
-
 /* 
 Those parameters can be generated with the python library scikit-learn.
 */
@@ -91,10 +87,6 @@ const float32_t classPriors[NB_OF_CLASSES] = {
 
 int32_t main(void)
 {
-#if defined(USING_FVP_CORSTONE_300)
-  uart_init();
-#endif
-
   /* Array of input data */
   float32_t in[2];
 
@@ -118,7 +110,7 @@ int32_t main(void)
 
   maxProba = result[index];
 
-#if defined(SEMIHOSTING) || defined(USING_FVP_CORSTONE_300)
+#if defined(SEMIHOSTING)
   printf("Class = %d\n", index);
   printf("Max proba = %f\n", (double)maxProba);
 #endif
@@ -130,7 +122,7 @@ int32_t main(void)
 
   maxProba = result[index];
 
-#if defined(SEMIHOSTING) || defined(USING_FVP_CORSTONE_300)
+#if defined(SEMIHOSTING)
   printf("Class = %d\n", index);
   printf("Max proba = %f\n", (double)maxProba);
 #endif
@@ -142,12 +134,12 @@ int32_t main(void)
 
   maxProba = result[index];
 
-#if defined(SEMIHOSTING) || defined(USING_FVP_CORSTONE_300)
+#if defined(SEMIHOSTING)
   printf("Class = %d\n", index);
   printf("Max proba = %f\n", (double)maxProba);
 #endif
 
-#if !defined(SEMIHOSTING) && !defined(USING_FVP_CORSTONE_300)
+#if !defined(SEMIHOSTING)
   while (1); /* main function does not return */
 #endif
 }

@@ -26,7 +26,6 @@ set(CMSISCORE ${CMSIS_PATH}/CMSIS/Core)
 add_compile_options(
   -Ofast
   -ffast-math
-  -DNDEBUG
   -Wall
   -Wextra
   -flax-vector-conversions
@@ -83,7 +82,8 @@ function(add_cmsis_dsp_example)
         target_link_options(${target} PRIVATE "--specs=nosys.specs")
         add_dependencies(${target} retarget cmsis_startup CMSISDSP)
 
-        target_compile_definitions(${target} PUBLIC USING_FVP_CORSTONE_300)
+        # define SEMIHOSTING to enable the printf statements in the examples, the output will use the UART
+        target_compile_definitions(${target} PUBLIC SEMIHOSTING)
 
         # Link in FVP dependencies to every example.
         target_link_options(${target} PRIVATE -T ${FVP_CORSTONE_300_PATH}/linker.ld)
