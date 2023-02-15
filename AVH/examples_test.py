@@ -30,9 +30,11 @@ class TestCmsisDspExamples(unittest.TestCase):
 
         # TODO: cleanup any left over instances
 
-        cls.fast_models_instance = AvhFastModelsInstance(
-            cls.avh_client, "CMSIS-DSP Examples Test - Corstone-300 FVP"
-        )
+        instance_name = "CMSIS-DSP Examples Test - Corstone-300 FVP"
+        if "TARGET_CPU" in os.environ:
+            instance_name += f" ({os.environ['TARGET_CPU']})"
+
+        cls.fast_models_instance = AvhFastModelsInstance(cls.avh_client, instance_name)
 
         cls.logger.info("creating instance ...")
         cls.addClassCleanup(cls.cleanupInstances)
