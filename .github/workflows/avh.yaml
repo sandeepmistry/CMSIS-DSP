@@ -7,6 +7,8 @@ jobs:
   compile_examples:
     name: Compile Examples
     runs-on: ubuntu-22.04
+    env:
+      AVH_API_TOKEN: ${{ secrets.AVH_API_TOKEN }}
     steps:
       - name: Checkout CMSIS-DSP
         uses: actions/checkout@v3
@@ -28,6 +30,9 @@ jobs:
         uses: carlosperate/arm-none-eabi-gcc-action@v1
         with:
           release: 12.2.Rel1
+      - name: Install Python dependencies
+        run: |
+          pip3 install -r CMSIS-DSP/AVH/requirements.txt
       - name: Compile
         run: |
           cd CMSIS-DSP/AVH
@@ -39,6 +44,10 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE=../toolchain/arm-none-eabi-gcc.cmake \
             ..
           make VERBOSE=1
+      - name: Test Examples on AVH
+        run: |
+          cd CMSIS-DSP/AVH
+          python3 -u -m unittest examples_test.py
       - name: Upload Compiled Examples
         uses: actions/upload-artifact@v3
         with:
