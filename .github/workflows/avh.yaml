@@ -41,7 +41,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip3 install -r CMSIS-DSP/AVH/requirements.txt
-      - name: Compile
+      - name: Compile Examples
         run: |
           cd CMSIS-DSP/AVH
           mkdir build
@@ -52,12 +52,12 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE=../toolchain/arm-none-eabi-gcc.cmake \
             ..
           make VERBOSE=1
-      - name: Test Examples on AVH
-        run: |
-          cd CMSIS-DSP/AVH
-          python3 -u -m unittest examples_test.py
       - name: Upload Compiled Examples
         uses: actions/upload-artifact@v3
         with:
           name: CMSIS-DSP-compiled-examples-${{ matrix.cpu }}
           path: CMSIS-DSP/AVH/build/**/*.elf
+      - name: Test Examples on AVH
+        run: |
+          cd CMSIS-DSP/AVH
+          python3 -u -m unittest examples_test.py
