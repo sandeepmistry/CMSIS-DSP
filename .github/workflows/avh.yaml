@@ -10,6 +10,8 @@ jobs:
     strategy:
       matrix:
           cpu:
+            - cortex-m4
+            - cortex-m7
             - cortex-m33
             - cortex-m55
     concurrency:
