@@ -46,15 +46,13 @@ class TestCmsisDspExamples(unittest.TestCase):
     def test_arm_bayes_example(self):
         self.logger.info("testing arm_bayes_example ...")
 
-        expected_output = "".join(
-            [
-                "Class = 0\r\n",
-                "Max proba = -2.899159\r\n",
-                "Class = 1\r\n",
-                "Max proba = -2.827732\r\n",
-                "Class = 2\r\n",
-                "Max proba = -3.108092\r\n",
-            ]
+        expected_output = (
+            "Class = 0\r\n"
+            "Max proba = -2.899159\r\n"
+            "Class = 1\r\n"
+            "Max proba = -2.827732\r\n"
+            "Class = 2\r\n"
+            "Max proba = -3.108092\r\n"
         )
 
         output, exit_code = self.fast_models_instance.run_elf(
@@ -67,10 +65,142 @@ class TestCmsisDspExamples(unittest.TestCase):
     def test_arm_class_marks_example(self):
         self.logger.info("testing arm_class_marks_example ...")
 
-        expected_output = "".join(["mean = 212.300003, std = 50.912827\r\n"])
+        expected_output = "mean = 212.300003, std = 50.912827\r\n"
 
         output, exit_code = self.fast_models_instance.run_elf(
             "./build/arm_class_marks_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_convolution_example(self):
+        self.logger.info("testing arm_convolution_example ...")
+
+        expected_output = "START\r\nSUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_convolution_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_dotproduct_example(self):
+        self.logger.info("testing arm_dotproduct_example ...")
+
+        expected_output = "SUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_dotproduct_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_fft_bin_example(self):
+        self.logger.info("testing arm_fft_bin_example ...")
+
+        expected_output = "SUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_fft_bin_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_fir_example(self):
+        self.logger.info("testing arm_fir_example ...")
+
+        expected_output = "SUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_fir_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_graphic_equalizer_example(self):
+        self.logger.info("testing arm_graphic_equalizer_example ...")
+
+        expected_output = "SUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_graphic_equalizer_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_linear_interp_example(self):
+        self.logger.info("testing arm_linear_interp_example ...")
+
+        expected_output = "SUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_linear_interp_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_matrix_example(self):
+        self.logger.info("testing arm_matrix_example ...")
+
+        expected_output = "SUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_matrix_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_signal_converge_example(self):
+        self.logger.info("testing arm_signal_converge_example ...")
+
+        expected_output = "SUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_signal_converge_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_sin_cos_example(self):
+        self.logger.info("testing arm_sin_cos_example ...")
+
+        expected_output = "SUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_sin_cos_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_svm_example(self):
+        self.logger.info("testing arm_svm_example ...")
+
+        expected_output = "Result = 0\r\nResult = 1\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_svm_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    def test_arm_variance_example(self):
+        self.logger.info("testing arm_variance_example ...")
+
+        expected_output = "SUCCESS\r\n"
+
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_variance_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
         self.assertEqual(exit_code, 0)

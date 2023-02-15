@@ -23,6 +23,12 @@ project(cmsis_dsp_examples VERSION 0.0.1)
 set(CMSIS_PATH "</path/to/CMSIS>" CACHE PATH "Path to CMSIS.")
 set(CMSISCORE ${CMSIS_PATH}/CMSIS/Core)
 
+# CMSIS-DSP config
+set(CONFIGTABLE OFF)
+set(ALLFAST ON)
+set(ALLFFT ON)
+set(HELIUM ON)
+
 add_compile_options(
   -Ofast
   -ffast-math
@@ -102,4 +108,70 @@ target_sources(arm_bayes_example PRIVATE
 add_cmsis_dsp_example(arm_class_marks_example)
 target_sources(arm_class_marks_example PRIVATE
     ../Examples/ARM/arm_class_marks_example/arm_class_marks_example_f32.c
+)
+
+add_cmsis_dsp_example(arm_convolution_example)
+target_sources(arm_convolution_example PRIVATE
+    ../Examples/ARM/arm_convolution_example/arm_convolution_example_f32.c
+    ../Examples/ARM/arm_convolution_example/math_helper.c
+)
+
+add_cmsis_dsp_example(arm_dotproduct_example)
+target_sources(arm_dotproduct_example PRIVATE
+    ../Examples/ARM/arm_dotproduct_example/arm_dotproduct_example_f32.c
+)
+
+add_cmsis_dsp_example(arm_fft_bin_example)
+target_sources(arm_fft_bin_example PRIVATE
+    ../Examples/ARM/arm_fft_bin_example/arm_fft_bin_data.c
+    ../Examples/ARM/arm_fft_bin_example/arm_fft_bin_example_f32.c
+)
+
+add_cmsis_dsp_example(arm_fir_example)
+target_sources(arm_fir_example PRIVATE
+    ../Examples/ARM/arm_fir_example/arm_fir_data.c
+    ../Examples/ARM/arm_fir_example/arm_fir_example_f32.c
+    ../Examples/ARM/arm_fir_example/math_helper.c
+)
+
+add_cmsis_dsp_example(arm_graphic_equalizer_example)
+target_sources(arm_graphic_equalizer_example PRIVATE
+    ../Examples/ARM/arm_graphic_equalizer_example/arm_graphic_equalizer_data.c
+    ../Examples/ARM/arm_graphic_equalizer_example/arm_graphic_equalizer_example_q31.c
+    ../Examples/ARM/arm_graphic_equalizer_example/math_helper.c
+)
+
+add_cmsis_dsp_example(arm_linear_interp_example)
+target_sources(arm_linear_interp_example PRIVATE
+    ../Examples/ARM/arm_linear_interp_example/arm_linear_interp_data.c
+    ../Examples/ARM/arm_linear_interp_example/arm_linear_interp_example_f32.c
+    ../Examples/ARM/arm_linear_interp_example/math_helper.c
+)
+
+add_cmsis_dsp_example(arm_matrix_example)
+target_sources(arm_matrix_example PRIVATE
+    ../Examples/ARM/arm_matrix_example/arm_matrix_example_f32.c
+    ../Examples/ARM/arm_matrix_example/math_helper.c
+)
+
+add_cmsis_dsp_example(arm_signal_converge_example)
+target_sources(arm_signal_converge_example PRIVATE
+    ../Examples/ARM/arm_signal_converge_example/arm_signal_converge_data.c
+    ../Examples/ARM/arm_signal_converge_example/arm_signal_converge_example_f32.c
+    ../Examples/ARM/arm_signal_converge_example/math_helper.c
+)
+
+add_cmsis_dsp_example(arm_sin_cos_example)
+target_sources(arm_sin_cos_example PRIVATE
+    ../Examples/ARM/arm_sin_cos_example/arm_sin_cos_example_f32.c
+)
+
+add_cmsis_dsp_example(arm_svm_example)
+target_sources(arm_svm_example PRIVATE
+    ../Examples/ARM/arm_svm_example/arm_svm_example_f32.c
+)
+
+add_cmsis_dsp_example(arm_variance_example)
+target_sources(arm_variance_example PRIVATE
+    ../Examples/ARM/arm_variance_example/arm_variance_example_f32.c
 )
