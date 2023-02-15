@@ -159,6 +159,7 @@ float32_t    max_marks, min_marks, mean, std, var;
 
 int32_t main()
 {
+
 #ifndef  USE_STATIC_INIT
 
   arm_matrix_instance_f32 srcA;
