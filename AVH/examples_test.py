@@ -13,9 +13,10 @@ if "AVH_API_TOKEN" not in os.environ:
 
 
 class TestCmsisDspExamples(unittest.TestCase):
-    def setUp(self):
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
+    @classmethod
+    def setUpClass(cls):
+        cls.logger = logging.getLogger(__name__)
+        cls.logger.setLevel(logging.INFO)
         stdout_logger_handler = logging.StreamHandler(sys.stdout)
         stdout_logger_handler.setFormatter(
             logging.Formatter(
@@ -23,27 +24,27 @@ class TestCmsisDspExamples(unittest.TestCase):
                 datefmt="%Y-%m-%d %H:%M:%S",
             )
         )
-        self.logger.addHandler(stdout_logger_handler)
+        cls.logger.addHandler(stdout_logger_handler)
 
-        self.avh_client = AvhClient(os.environ["AVH_API_TOKEN"])
+        cls.avh_client = AvhClient(os.environ["AVH_API_TOKEN"])
 
         # TODO: cleanup any left over instances
 
-        self.fast_models_instance = AvhFastModelsInstance(
-            self.avh_client, "CMSIS-DSP Examples Test - Corstone-300 FVP"
+        cls.fast_models_instance = AvhFastModelsInstance(
+            cls.avh_client, "CMSIS-DSP Examples Test - Corstone-300 FVP"
         )
 
-        self.logger.info("creating instance ...")
-        self.addCleanup(self.cleanupInstances)
+        cls.logger.info("creating instance ...")
+        cls.addClassCleanup(cls.cleanupInstances)
 
-        self.fast_models_instance.create()
-        self.fast_models_instance.wait_for_state_on()
+        cls.fast_models_instance.create()
+        cls.fast_models_instance.wait_for_state_on()
 
-        self.logger.info("waiting for OS to boot ...")
-        self.fast_models_instance.wait_for_os_boot()
+        cls.logger.info("waiting for OS to boot ...")
+        cls.fast_models_instance.wait_for_os_boot()
 
     def test_arm_bayes_example(self):
-        self.logger.info("testing  arm_bayes_example ...")
+        self.logger.info("testing arm_bayes_example ...")
 
         expected_output = "".join(
             [
@@ -63,38 +64,27 @@ class TestCmsisDspExamples(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertIn(expected_output, output)
 
-    def cleanupInstances(self):
-        self.logger.info("deleting instance ...")
-        self.fast_models_instance.delete()
+    def test_arm_class_marks_example(self):
+        self.logger.info("testing arm_class_marks_example ...")
 
-        self.fast_models_instance.wait_for_state_deleted()
+        expected_output = "".join(["mean = 212.300003, std = 50.912827\r\n"])
 
-        self.avh_client.close()
+        output, exit_code = self.fast_models_instance.run_elf(
+            "./build/arm_class_marks_example.elf", "./Corstone-300/fvp_config.txt"
+        )
+
+        self.assertEqual(exit_code, 0)
+        self.assertIn(expected_output, output)
+
+    @classmethod
+    def cleanupInstances(cls):
+        cls.logger.info("deleting instance ...")
+        cls.fast_models_instance.delete()
+
+        cls.fast_models_instance.wait_for_state_deleted()
+
+        cls.avh_client.close()
 
 
 if __name__ == "__main__":
     unittest.main()
-
-
-# avh_client = AvhClient(os.environ["AVH_API_TOKEN"])
-
-
-# print("creating instance")
-# fast_models_instance.create()
-
-# print("waiting for instance state on")
-# fast_models_instance.wait_for_state_on()
-
-# print("waiting for instance OS to boot")
-# fast_models_instance.wait_for_os_boot()
-
-
-# print(exit_code, output)
-
-# print("deleting instance")
-# fast_models_instance.delete()
-
-# print("waiting for instance state deleted")
-# fast_models_instance.wait_for_state_deleted()
-
-# avh_client.close()
