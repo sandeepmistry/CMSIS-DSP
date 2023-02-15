@@ -83,18 +83,9 @@ class AvhFastModelsInstance:
                 self.name, f"{self.ssh_pkey.get_name()} {self.ssh_pkey.get_base64()}"
             )
 
-        # instance_quick_connect_command = self.avh_client.instance_quick_connect_command(
-        #     self.instance_id
-        # )
-
-        # split_instance_quick_connect_command = instance_quick_connect_command.split()
-        proxy_username = (
-            self.avh_client.default_project_id
-        )  # split_instance_quick_connect_command[-2].split("@")[-2]
-        proxy_hostname = "proxy.app.avh.arm.com"  # split_instance_quick_connect_command[-2].split("@")[-1]
-        instance_ip = self.avh_client.instance_ip_address(
-            self.instance_id
-        )  # split_instance_quick_connect_command[-1].split("@")[-1]
+        proxy_username = self.avh_client.default_project_id
+        proxy_hostname = "proxy.app.avh.arm.com"
+        instance_ip = self.avh_client.instance_ip_address(self.instance_id)
 
         ssh_proxy_client = paramiko.SSHClient()
         ssh_proxy_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
