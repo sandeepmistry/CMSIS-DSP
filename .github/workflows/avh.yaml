@@ -35,7 +35,7 @@ jobs:
           cd build
           cmake \
             -DTARGET_CPU=cortex-m55 \
-            -DCMSIS_PATH=../../CMSIS_5 \
+            -DCMSIS_PATH=../../../CMSIS_5 \
             -DCMAKE_TOOLCHAIN_FILE=../toolchain/arm-none-eabi-gcc.cmake \
             ..
           make VERBOSE=1
