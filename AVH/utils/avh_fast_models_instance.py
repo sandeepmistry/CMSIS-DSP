@@ -163,7 +163,8 @@ class AvhFastModelsInstance:
         stfp_client.close()
 
         stdin, stdout, stderr = ssh_client.exec_command(
-            "./VHT-arm64/VHT_MPS3_Corstone_SSE-300 -f /tmp/fvp-config.txt -a /tmp/application.elf"
+            "./VHT-arm64/VHT_MPS3_Corstone_SSE-300 -f /tmp/fvp-config.txt -a /tmp/application.elf",
+            timeout=timeout,
         )
         exit_status = stdout.channel.recv_exit_status()
 
