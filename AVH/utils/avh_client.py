@@ -43,7 +43,7 @@ class AvhClient:
         return self.avh_api.v1_add_project_key(
             self.default_project_id,
             AvhProjectKey(kind="ssh", key=key, label=label),
-        ).identifier
+        )["identifier"]
 
     def delete_ssh_project_key(self, key_id):
         self.avh_api.v1_remove_project_key(self.default_project_id, key_id)
