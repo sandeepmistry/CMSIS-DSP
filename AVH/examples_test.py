@@ -5,8 +5,8 @@ import unittest
 
 import os
 
-from utils.avh_client import AvhClient
-from utils.avh_fast_models_instance import AvhFastModelsInstance
+from test_utils.avh_client import AvhClient
+from test_utils.avh_fast_models_instance import AvhFastModelsInstance
 
 if "AVH_API_TOKEN" not in os.environ:
     raise Exception("Please set AVH_API_TOKEN environment variable!")
