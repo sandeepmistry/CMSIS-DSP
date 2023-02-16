@@ -102,6 +102,8 @@ class AvhFastModelsInstance:
         )
 
         try:
+            ssh_proxy_client.get_transport().set_keepalive(timeout)
+
             proxy_sock = ssh_proxy_client.get_transport().open_channel(
                 kind="direct-tcpip",
                 dest_addr=(instance_ip, 22),
