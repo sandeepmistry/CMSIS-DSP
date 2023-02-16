@@ -119,6 +119,8 @@ class AvhFastModelsInstance:
                 timeout=timeout,
                 look_for_keys=False,
             )
+
+            ssh_client.get_transport().set_keepalive(timeout)
         except Exception as e:
             raise Exception(
                 f"Failled to connect to {instance_ip} via SSH proxy {proxy_username}@{proxy_hostname}"
@@ -168,9 +170,14 @@ class AvhFastModelsInstance:
             "./VHT-arm64/VHT_MPS3_Corstone_SSE-300 -f /tmp/fvp-config.txt -a /tmp/application.elf",
             timeout=timeout,
         )
-        exit_status = stdout.channel.recv_exit_status()
+        channel = stdout.channel
+        print("channel.recv_exit_status()")
+        exit_status = channel.recv_exit_status()
+        print("exit_status =", exit_status)
 
-        stdout_lines = stdout.readlines()
+        print("stdout.readlines()")
+        stdout_lines = stdout.readlines() if channel.active else []
+        print("stdout_lines =", stdout_lines)
 
         stdin.close()
         stdout.close()
