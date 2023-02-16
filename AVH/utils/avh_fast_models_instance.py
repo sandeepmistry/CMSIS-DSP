@@ -102,8 +102,6 @@ class AvhFastModelsInstance:
         )
 
         try:
-            ssh_proxy_client.get_transport().set_keepalive(timeout)
-
             proxy_sock = ssh_proxy_client.get_transport().open_channel(
                 kind="direct-tcpip",
                 dest_addr=(instance_ip, 22),
@@ -119,8 +117,6 @@ class AvhFastModelsInstance:
                 timeout=timeout,
                 look_for_keys=False,
             )
-
-            ssh_client.get_transport().set_keepalive(timeout)
         except Exception as e:
             raise Exception(
                 f"Failled to connect to {instance_ip} via SSH proxy {proxy_username}@{proxy_hostname}"
@@ -165,6 +161,9 @@ class AvhFastModelsInstance:
         stfp_client.put(elf_path, "/tmp/application.elf")
         stfp_client.put(config_path, "/tmp/fvp-config.txt")
         stfp_client.close()
+        ssh_client.close()
+
+        ssh_client = self.ssh_client()
 
         stdin, stdout, stderr = ssh_client.exec_command(
             "./VHT-arm64/VHT_MPS3_Corstone_SSE-300 -f /tmp/fvp-config.txt -a /tmp/application.elf",
@@ -172,19 +171,18 @@ class AvhFastModelsInstance:
         )
         channel = stdout.channel
 
-        stdout_lines = []
+        stdout_data = b""
 
         for i in range(timeout):
             if channel.recv_ready():
                 try:
                     print("recv_ready")
-                    stdout_lines += stdout.readlines()
+                    stdout_data += stdout.read()
                 except TimeoutError:
                     print("TimeoutError")
                 except paramiko.buffered_pipe.PipeTimeout:
                     print("paramiko.buffered_pipe.PipeTimeout")
-
-            if channel.exit_status_ready():
+            elif channel.exit_status_ready():
                 print("exit_status_ready")
                 break
             time.sleep(1.0)
@@ -197,4 +195,4 @@ class AvhFastModelsInstance:
 
         ssh_client.close()
 
-        return "".join(stdout_lines), exit_status
+        return stdout_data.decode(), exit_status
