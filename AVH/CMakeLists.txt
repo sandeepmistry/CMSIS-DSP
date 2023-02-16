@@ -84,11 +84,10 @@ function(add_cmsis_dsp_example)
     foreach(target ${ARGV})
         set(tmp "${tmp} ${target}")
         add_executable(${target})
-        target_link_libraries(${target} PRIVATE retarget $<TARGET_OBJECTS:cmsis_startup> cmsis_startup CMSISDSP m)
-        target_link_options(${target} PRIVATE "--specs=nosys.specs")
-        add_dependencies(${target} retarget cmsis_startup CMSISDSP)
+        target_link_libraries(${target} PRIVATE $<TARGET_OBJECTS:cmsis_startup> cmsis_startup CMSISDSP m c rdimon)
+        add_dependencies(${target} cmsis_startup CMSISDSP)
 
-        # define SEMIHOSTING to enable the printf statements in the examples, the output will use the UART
+        # define SEMIHOSTING to enable the printf statements in the examples
         target_compile_definitions(${target} PUBLIC SEMIHOSTING)
 
         # Link in FVP dependencies to every example.

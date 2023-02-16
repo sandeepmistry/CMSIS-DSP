@@ -1,6 +1,12 @@
-mps3_board.visualisation.disable-visualisation=1
+cpu0.semihosting-enable=1
+cpu0.semihosting-heap_limit=0
+cpu0.semihosting-stack_base=0
+cpu0.semihosting-stack_limit=0
+
+cpu_core.mps3_board.uart0.shutdown_on_eot=1
+
+mps3_board.DISABLE_GATING=1
 mps3_board.telnetterminal0.start_telnet=0
 mps3_board.uart0.out_file="-"
 mps3_board.uart0.unbuffered_output=1
-cpu_core.mps3_board.uart0.shutdown_on_eot=1
-
+mps3_board.visualisation.disable-visualisation=1

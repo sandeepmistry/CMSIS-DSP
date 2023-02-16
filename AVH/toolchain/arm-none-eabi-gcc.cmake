@@ -47,7 +47,7 @@ add_compile_definitions(
 add_link_options(
     -mcpu=${GCC_CPU}
     -mthumb
-    --specs=nosys.specs)
+    --specs=rdimon.specs)
 # Set floating point unit
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "\\+fp")
     set(FLOAT hard)

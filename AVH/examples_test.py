@@ -55,9 +55,9 @@ class TestCmsisDspExamples(unittest.TestCase):
         self.assertEqual(exit_code, 0)
 
         # NOTE: last floating point digit of Max proba is removed from check
-        self.assertIn("Class = 0\r\nMax proba = -2.89915", output)
-        self.assertIn("Class = 1\r\nMax proba = -2.82773", output)
-        self.assertIn("Class = 2\r\nMax proba = -3.10809", output)
+        self.assertIn("Class = 0\nMax proba = -2.89915", output)
+        self.assertIn("Class = 1\nMax proba = -2.82773", output)
+        self.assertIn("Class = 2\nMax proba = -3.10809", output)
 
     def test_arm_class_marks_example(self):
         self.logger.info("testing arm_class_marks_example ...")
@@ -67,7 +67,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("mean = 212.300003, std = 50.912827\r\n", output)
+        self.assertIn("mean = 212.300003, std = 50.912827\n\n", output)
 
     def test_arm_convolution_example(self):
         self.logger.info("testing arm_convolution_example ...")
@@ -77,7 +77,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("START\r\nSUCCESS\r\n", output)
+        self.assertIn("START\nSUCCESS\n", output)
 
     def test_arm_dotproduct_example(self):
         self.logger.info("testing arm_dotproduct_example ...")
@@ -87,7 +87,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("SUCCESS\r\n", output)
+        self.assertIn("SUCCESS\n", output)
 
     def test_arm_fft_bin_example(self):
         self.logger.info("testing arm_fft_bin_example ...")
@@ -97,7 +97,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("SUCCESS\r\n", output)
+        self.assertIn("SUCCESS\n", output)
 
     def test_arm_fir_example(self):
         self.logger.info("testing arm_fir_example ...")
@@ -107,7 +107,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("SUCCESS\r\n", output)
+        self.assertIn("SUCCESS\n", output)
 
     def test_arm_graphic_equalizer_example(self):
         self.logger.info("testing arm_graphic_equalizer_example ...")
@@ -117,7 +117,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("SUCCESS\r\n", output)
+        self.assertIn("SUCCESS\n", output)
 
     def test_arm_linear_interp_example(self):
         self.logger.info("testing arm_linear_interp_example ...")
@@ -127,7 +127,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("SUCCESS\r\n", output)
+        self.assertIn("SUCCESS\n", output)
 
     def test_arm_matrix_example(self):
         self.logger.info("testing arm_matrix_example ...")
@@ -137,7 +137,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("SUCCESS\r\n", output)
+        self.assertIn("SUCCESS\n", output)
 
     def test_arm_signal_converge_example(self):
         self.logger.info("testing arm_signal_converge_example ...")
@@ -147,7 +147,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("SUCCESS\r\n", output)
+        self.assertIn("SUCCESS\n", output)
 
     def test_arm_sin_cos_example(self):
         self.logger.info("testing arm_sin_cos_example ...")
@@ -157,7 +157,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("SUCCESS\r\n", output)
+        self.assertIn("SUCCESS\n", output)
 
     def test_arm_svm_example(self):
         self.logger.info("testing arm_svm_example ...")
@@ -167,7 +167,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("Result = 0\r\nResult = 1\r\n", output)
+        self.assertIn("Result = 0\nResult = 1\n", output)
 
     def test_arm_variance_example(self):
         self.logger.info("testing arm_variance_example ...")
@@ -177,7 +177,7 @@ class TestCmsisDspExamples(unittest.TestCase):
         )
 
         self.assertEqual(exit_code, 0)
-        self.assertIn("SUCCESS\r\n", output)
+        self.assertIn("SUCCESS\n", output)
 
     @classmethod
     def cleanupInstances(cls):
