@@ -176,8 +176,14 @@ class AvhFastModelsInstance:
 
         for i in range(timeout):
             if channel.recv_ready():
-                print("recv_ready")
-                stdout_lines += stdout.readlines()
+                try:
+                    print("recv_ready")
+                    stdout_lines += stdout.readlines()
+                except TimeoutError:
+                    print("TimeoutError")
+                except paramiko.buffered_pipe.PipeTimeout:
+                    print("paramiko.buffered_pipe.PipeTimeout")
+
             if channel.exit_status_ready():
                 print("exit_status_ready")
                 break
