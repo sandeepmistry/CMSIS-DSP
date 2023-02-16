@@ -171,13 +171,19 @@ class AvhFastModelsInstance:
             timeout=timeout,
         )
         channel = stdout.channel
-        print("channel.recv_exit_status()")
-        exit_status = channel.recv_exit_status()
-        print("exit_status =", exit_status)
 
-        print("stdout.readlines()")
-        stdout_lines = stdout.readlines() if channel.active else []
-        print("stdout_lines =", stdout_lines)
+        stdout_lines = []
+
+        for i in range(timeout):
+            if channel.recv_ready():
+                print("recv_ready")
+                stdout_lines += stdout.readlines()
+            if channel.exit_status_ready():
+                print("exit_status_ready")
+                break
+            time.sleep(1.0)
+
+        exit_status = channel.exit_status
 
         stdin.close()
         stdout.close()
