@@ -75,7 +75,7 @@ class AvhFastModelsInstance:
 
             time.sleep(1.0)
 
-    def ssh_client(self, timeout=30):
+    def ssh_client(self, timeout=60):
         if self.ssh_pkey is None:
             self.ssh_pkey = paramiko.ecdsakey.ECDSAKey.generate()
 
