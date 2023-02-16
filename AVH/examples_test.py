@@ -66,8 +66,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_class_marks_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("mean = 212.300003, std = 50.912827\n\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_convolution_example(self):
         self.logger.info("testing arm_convolution_example ...")
@@ -76,8 +76,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_convolution_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("START\nSUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_dotproduct_example(self):
         self.logger.info("testing arm_dotproduct_example ...")
@@ -86,8 +86,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_dotproduct_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("SUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_fft_bin_example(self):
         self.logger.info("testing arm_fft_bin_example ...")
@@ -96,8 +96,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_fft_bin_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("SUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_fir_example(self):
         self.logger.info("testing arm_fir_example ...")
@@ -106,8 +106,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_fir_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("SUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_graphic_equalizer_example(self):
         self.logger.info("testing arm_graphic_equalizer_example ...")
@@ -116,8 +116,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_graphic_equalizer_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("SUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_linear_interp_example(self):
         self.logger.info("testing arm_linear_interp_example ...")
@@ -126,8 +126,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_linear_interp_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("SUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_matrix_example(self):
         self.logger.info("testing arm_matrix_example ...")
@@ -136,8 +136,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_matrix_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("SUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_signal_converge_example(self):
         self.logger.info("testing arm_signal_converge_example ...")
@@ -146,8 +146,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_signal_converge_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("SUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_sin_cos_example(self):
         self.logger.info("testing arm_sin_cos_example ...")
@@ -156,8 +156,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_sin_cos_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("SUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_svm_example(self):
         self.logger.info("testing arm_svm_example ...")
@@ -166,8 +166,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_svm_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("Result = 0\nResult = 1\n", output)
+        self.assertEqual(exit_code, 0)
 
     def test_arm_variance_example(self):
         self.logger.info("testing arm_variance_example ...")
@@ -176,8 +176,8 @@ class TestCmsisDspExamples(unittest.TestCase):
             "./build/arm_variance_example.elf", "./Corstone-300/fvp_config.txt"
         )
 
-        self.assertEqual(exit_code, 0)
         self.assertIn("SUCCESS\n", output)
+        self.assertEqual(exit_code, 0)
 
     @classmethod
     def cleanupInstances(cls):
