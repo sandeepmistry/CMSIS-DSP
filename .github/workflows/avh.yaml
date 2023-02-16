@@ -24,13 +24,14 @@ jobs:
       - name: Checkout CMSIS-DSP
         uses: actions/checkout@v3
         with:
+          path: CMSIS-DSP
           fetch-depth: 0
       - name: Checkout CMSIS_5
         uses: actions/checkout@v3
         with:
           repository: ARM-Software/CMSIS_5
           ref: 5.9.0
-          path: ../CMSIS_5
+          path: CMSIS_5
           fetch-depth: 0
       - name: Install CMake
         uses: jwlawson/actions-setup-cmake@v1.13
@@ -42,15 +43,15 @@ jobs:
           release: 12.2.Rel1
       - name: Install Python dependencies
         run: |
-          pip3 install -r AVH/requirements.txt
+          pip3 install -r CMSIS-DSP/AVH/requirements.txt
       - name: Compile Examples
         run: |
-          cd AVH
+          cd CMSIS-DSP/AVH
           mkdir build
           cd build
           cmake \
             -DTARGET_CPU=${TARGET_CPU} \
-            -DCMSIS_PATH=../../CMSIS_5 \
+            -DCMSIS_PATH=../../../CMSIS_5 \
             -DCMAKE_TOOLCHAIN_FILE=../toolchain/arm-none-eabi-gcc.cmake \
             ..
           make VERBOSE=1
@@ -58,8 +59,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: CMSIS-DSP-compiled-examples-${{ matrix.cpu }}
-          path: AVH/build/**/*.elf
+          path: CMSIS-DSP/AVH/build/**/*.elf
       - name: Test Examples on AVH
         run: |
-          cd AVH
+          cd CMSIS-DSP/AVH
           python3 -u -m unittest examples_test.py
