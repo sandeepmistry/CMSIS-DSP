@@ -51,10 +51,6 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/.. CMSISDSP)
 # Target for all unit tests.
 add_custom_target(cmsis_dsp_examples)
 
-add_library(retarget STATIC
-    ${FVP_CORSTONE_300_PATH}/retarget.c
-    ${FVP_CORSTONE_300_PATH}/uart.c)
-
 # Build CMSIS startup dependencies based on TARGET_CPU.
 string(REGEX REPLACE "^cortex-m([0-9]+)$" "ARMCM\\1" ARM_CPU ${CMAKE_SYSTEM_PROCESSOR})
 if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "cortex-m33")
@@ -84,7 +80,7 @@ function(add_cmsis_dsp_example)
     foreach(target ${ARGV})
         set(tmp "${tmp} ${target}")
         add_executable(${target})
-        target_link_libraries(${target} PRIVATE $<TARGET_OBJECTS:cmsis_startup> cmsis_startup CMSISDSP m c rdimon)
+        target_link_libraries(${target} PRIVATE $<TARGET_OBJECTS:cmsis_startup> cmsis_startup CMSISDSP m)
         add_dependencies(${target} cmsis_startup CMSISDSP)
 
         # define SEMIHOSTING to enable the printf statements in the examples
