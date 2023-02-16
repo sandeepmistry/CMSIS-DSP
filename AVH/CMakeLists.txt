@@ -41,8 +41,6 @@ if (${CMSIS_PATH} STREQUAL "</path/to/CMSIS>")
   message(FATAL_ERROR "CMSIS not set. Did you provide -DCMSIS=<path/to/CMSIS>?")
 endif()
 
-set(FVP_CORSTONE_300_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Corstone-300" CACHE PATH
-    "Dependencies for using FVP based on Arm Corstone-300 software.")
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
 # Build the functions to be tested.
@@ -87,8 +85,8 @@ function(add_cmsis_dsp_example)
         target_compile_definitions(${target} PUBLIC SEMIHOSTING)
 
         # Link in FVP dependencies to every example.
-        target_link_options(${target} PRIVATE -T ${FVP_CORSTONE_300_PATH}/linker.ld)
-        set_target_properties(${target} PROPERTIES LINK_DEPENDS ${FVP_CORSTONE_300_PATH}/linker.ld)
+        target_link_options(${target} PRIVATE -T ${CMSIS_PATH}/Device/ARM/${ARM_CPU}/Source/GCC/gcc_arm.ld)
+        set_target_properties(${target} PROPERTIES LINK_DEPENDS ${CMSIS_PATH}/Device/ARM/${ARM_CPU}/Source/GCC/gcc_arm.ld)
 
         add_dependencies(cmsis_dsp_examples ${target})
     endforeach()
