@@ -40,20 +40,10 @@ class AvhClient:
         return self.avh_api.v1_get_instance(instance_id)["wifi_ip"]
 
     def create_ssh_project_key(self, label, key):
-        try:
-            api_response = self.avh_api.v1_add_project_key(
-                self.default_project_id,
-                AvhProjectKey(kind="ssh", key=key, label=label),
-            )
-        except Exception as e:
-            # TODO: this API call should NOT fail!
-            pass
-
-        project_keys = self.avh_api.v1_get_project_keys(self.default_project_id)
-
-        for project_key in project_keys:
-            if "".join(project_key.key) == key:
-                return project_key.identifier
+        return self.avh_api.v1_add_project_key(
+            self.default_project_id,
+            AvhProjectKey(kind="ssh", key=key, label=label),
+        ).identifier
 
     def delete_ssh_project_key(self, key_id):
         self.avh_api.v1_remove_project_key(self.default_project_id, key_id)
