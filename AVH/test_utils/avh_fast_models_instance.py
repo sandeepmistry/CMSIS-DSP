@@ -161,31 +161,33 @@ class AvhFastModelsInstance:
         stfp_client.put(elf_path, "/tmp/application.elf")
         stfp_client.put(config_path, "/tmp/fvp-config.txt")
         stfp_client.close()
-        ssh_client.close()
 
-        ssh_client = self.ssh_client()
+        channel = ssh_client.get_transport().open_session(timeout=timeout)
+        channel.settimeout(timeout)
+        channel.set_combine_stderr(True)
 
-        stdin, stdout, stderr = ssh_client.exec_command(
+        channel.exec_command(
             "./VHT-arm64/VHT_MPS3_Corstone_SSE-300 -f /tmp/fvp-config.txt -a /tmp/application.elf",
-            timeout=timeout,
         )
-        channel = stdout.channel
 
-        stdout_data = b""
+        start_time = time.monotonic()
+        output = b""
 
-        for i in range(timeout):
+        while True:
             if channel.recv_ready():
-                stdout_data += stdout.read()
+                output += channel.recv(8 * 1024)
             elif channel.exit_status_ready():
                 break
-            time.sleep(1.0)
+            elif (time.monotonic() - start_time) > timeout:
+                raise Exception(
+                    f"Timed out waiting for FVP to exit. Current output is {output}"
+                )
+            else:
+                time.sleep(1.0)
 
         exit_status = channel.exit_status
 
-        stdin.close()
-        stdout.close()
-        stderr.close()
-
+        channel.close()
         ssh_client.close()
 
-        return stdout_data.decode(), exit_status
+        return output.decode(), exit_status
