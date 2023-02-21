@@ -61,7 +61,7 @@ jobs:
           name: CMSIS-DSP-compiled-examples-${{ matrix.cpu }}
           path: CMSIS-DSP/AVH/build/**/*.elf
       - name: Test Examples on AVH
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: |
           cd CMSIS-DSP/AVH
           python3 -u -m unittest examples_test.py
