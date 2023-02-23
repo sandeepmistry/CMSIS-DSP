@@ -3,16 +3,13 @@ import socket
 import time
 
 import avh_api
-import paramiko
+import websocket
 
 DEFAULT_INSTANCE_FLAVOR = "corstone-300fvp"
 DEFAULT_INSTANCE_OS = "FastModels"
 DEFAULT_INSTANCE_OS_VERSION = "11.16.14"
 
-DEFAULT_OS_BOOTED_OUTPUT = "Info: /OSCI/SystemC: Simulation stopped by user."
-
-DEFAULT_SSH_USERNAME = "ubuntu"
-DEFAULT_SSH_PASSWORD = "password"
+DEFAULT_DEVICE_BOOTED_OUTPUT = "Info: /OSCI/SystemC: Simulation stopped by user."
 
 
 class AvhFastModelsInstance:
@@ -23,23 +20,21 @@ class AvhFastModelsInstance:
         flavor=DEFAULT_INSTANCE_FLAVOR,
         os=DEFAULT_INSTANCE_OS,
         os_version=DEFAULT_INSTANCE_OS_VERSION,
-        username=DEFAULT_SSH_USERNAME,
-        password=DEFAULT_SSH_PASSWORD,
     ):
         self.avh_client = avh_client
         self.name = name
         self.flavor = flavor
         self.os = os
         self.os_version = os_version
-        self.username = username
-        self.password = password
         self.instance_id = None
-        self.ssh_pkey = None
-        self.ssh_key_id = None
+        self.console = None
 
     def create(self):
         self.instance_id = self.avh_client.create_instance(
-            name=self.name, flavor=self.flavor, os=self.os_version, osbuild=self.os
+            name=self.name,
+            flavor=self.flavor,
+            os=self.os_version,
+            osbuild=self.os,
         )
 
     def wait_for_state_on(self, timeout=240):
@@ -59,11 +54,20 @@ class AvhFastModelsInstance:
 
             time.sleep(1.0)
 
-    def wait_for_os_boot(self, booted_output=DEFAULT_OS_BOOTED_OUTPUT, timeout=240):
+        if self.console is not None:
+            self.console.close()
+
+        self.console = websocket.create_connection(
+            self.avh_client.instance_console_url(self.instance_id)
+        )
+
+    def wait_for_os_boot(self, booted_output=DEFAULT_DEVICE_BOOTED_OUTPUT, timeout=240):
         start_time = time.monotonic()
 
+        console_log = ""
+
         while True:
-            console_log = self.avh_client.instance_console_log(self.instance_id)
+            console_log += self.console.recv().decode()
 
             if booted_output in console_log:
                 break
@@ -75,60 +79,31 @@ class AvhFastModelsInstance:
 
             time.sleep(1.0)
 
-    def ssh_client(self, timeout=60):
-        if self.ssh_pkey is None:
-            self.ssh_pkey = paramiko.ecdsakey.ECDSAKey.generate()
+        # sleep is needed here to avoid corrupting the license file on reboot ...
+        # time.sleep(120.0)
 
-            self.ssh_key_id = self.avh_client.create_ssh_project_key(
-                self.name, f"{self.ssh_pkey.get_name()} {self.ssh_pkey.get_base64()}"
-            )
+    def wait_for_state_rebooting(self, timeout=240):
+        start_time = time.monotonic()
 
-        proxy_username = self.avh_client.default_project_id
-        proxy_hostname = "proxy.app.avh.arm.com"
-        instance_ip = self.avh_client.instance_ip_address(self.instance_id)
+        while True:
+            instance_state = self.avh_client.instance_state(self.instance_id)
 
-        ssh_proxy_client = paramiko.SSHClient()
-        ssh_proxy_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            if instance_state == "rebooting":
+                break
+            elif instance_state == "error":
+                raise Exception("VM entered error state")
+            elif (time.monotonic() - start_time) > timeout:
+                raise Exception(
+                    f"Timed out waiting for state 'rebooting' for instance id {self.instance_id}"
+                )
 
-        ssh_client = paramiko.SSHClient()
-        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-        ssh_proxy_client.connect(
-            hostname=proxy_hostname,
-            username=proxy_username,
-            pkey=self.ssh_pkey,
-            look_for_keys=False,
-            timeout=timeout,
-        )
-
-        try:
-            proxy_sock = ssh_proxy_client.get_transport().open_channel(
-                kind="direct-tcpip",
-                dest_addr=(instance_ip, 22),
-                src_addr=("", 0),
-                timeout=timeout,
-            )
-
-            ssh_client.connect(
-                hostname=instance_ip,
-                username=self.username,
-                password=self.password,
-                sock=proxy_sock,
-                timeout=timeout,
-                look_for_keys=False,
-            )
-        except Exception as e:
-            raise Exception(
-                f"Failled to connect to {instance_ip} via SSH proxy {proxy_username}@{proxy_hostname}"
-            )
-
-        return ssh_client
+            time.sleep(1.0)
 
     def delete(self):
-        if self.ssh_key_id is not None:
-            self.avh_client.delete_ssh_project_key(self.ssh_key_id)
+        if self.console is not None:
+            self.console.close()
 
-            self.ssh_key_id = None
+            self.console = None
 
         if self.instance_id is not None:
             self.avh_client.delete_instance(self.instance_id)
@@ -154,40 +129,36 @@ class AvhFastModelsInstance:
 
         self.instance_id = None
 
-    def run_elf(self, elf_path, config_path, timeout=30):
-        ssh_client = self.ssh_client()
+    def run_elf(self, elf_path, config_path, timeout=120):
+        self.avh_client.upload_vmfile("config-file", config_path, self.instance_id)
 
-        stfp_client = ssh_client.open_sftp()
-        stfp_client.put(elf_path, "/tmp/application.elf")
-        stfp_client.put(config_path, "/tmp/fvp-config.txt")
-        stfp_client.close()
+        self.avh_client.upload_vmfile("application", elf_path, self.instance_id)
 
-        channel = ssh_client.get_transport().open_session(timeout=timeout)
-        channel.settimeout(timeout)
-        channel.set_combine_stderr(True)
+        self.avh_client.reboot_instance(self.instance_id)
 
-        channel.exec_command(
-            "./VHT-arm64/VHT_MPS3_Corstone_SSE-300 -f /tmp/fvp-config.txt -a /tmp/application.elf",
-        )
+        self.wait_for_state_rebooting()
+        self.wait_for_state_on()
+
+        self.console.settimeout(1.0)
 
         start_time = time.monotonic()
-        output = b""
+        output = ""
 
         while True:
-            if channel.recv_ready():
-                output += channel.recv(8 * 1024)
-            elif channel.exit_status_ready():
-                break
-            elif (time.monotonic() - start_time) > timeout:
+            if (time.monotonic() - start_time) > timeout:
                 raise Exception(
-                    f"Timed out waiting for FVP to exit. Current output is {output}"
+                    f"Timed out waiting for '{DEFAULT_DEVICE_BOOTED_OUTPUT}' in console output"
+                    f"Current output is {output}"
                 )
-            else:
-                time.sleep(1.0)
 
-        exit_status = channel.exit_status
+            try:
+                output += self.console.recv().decode()
+            except websocket.WebSocketTimeoutException as wste:
+                pass
 
-        channel.close()
-        ssh_client.close()
+            print("console_log = ", output)
 
-        return output.decode(), exit_status
+            if DEFAULT_DEVICE_BOOTED_OUTPUT in output:
+                break
+
+        return console_log, 0
